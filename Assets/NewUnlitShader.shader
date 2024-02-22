@@ -1,5 +1,7 @@
 // Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 Shader "Custom/MyShader"
 {
     Properties
@@ -11,23 +13,31 @@ Shader "Custom/MyShader"
         Pass
         {
             CGPROGRAM
-                
+
                 #pragma vertex VertexProgram
                 #pragma fragment FragmentProgram
 
                 #include "UnityCG.cginc"
 
                 float4 _Tint;
-                
-                float4 VertexProgram(float4 position : POSITION) : SV_POSITION
+
+                struct Interpolators {
+                    float4 position : SV_POSITION;
+                    float3 localPosition : TEXCOORD0;
+                };
+
+                Interpolators VertexProgram(float4 position : POSITION)
                 {
-                    return  UnityObjectToClipPos(position);
+                    Interpolators i;
+                    i.localPosition = position.xyz;
+                    i.position = UnityObjectToClipPos(position);
+                    return  i;
                 }
-                float4 FragmentProgram(float4 position : SV_POSITION) : SV_TARGET
+                float4 FragmentProgram(Interpolators i) : SV_TARGET
                 {
-                    return _Tint;
+                    return float4(i.localPosition + .5, 1) * _Tint;
                 }
-                
+
             ENDCG
         }
     }

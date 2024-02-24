@@ -2,12 +2,13 @@
 
 // Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
-Shader "Custom/MyShader"
+Shader "Custom/Textured With Detail"
 {
     Properties
     {
         _Tint("Tint", Color) = (0, 0, 0, 1)
         _MainTex("Texture", 2D) = "white"{}
+        _DetailTex("Detail Texture", 2D) = "white"{}
     }
     SubShader
     {
@@ -22,7 +23,9 @@ Shader "Custom/MyShader"
 
                 float4 _Tint;
                 sampler2D _MainTex;
+                sampler2D _DetailTex;
                 float4 _MainTex_ST;
+                float4 _DetailTex_ST;
 
                 struct Interpolators {
                     float4 position : SV_POSITION;
@@ -43,7 +46,9 @@ Shader "Custom/MyShader"
 
                 float4 FragmentProgram(Interpolators i) : SV_TARGET
                 {
-                    return tex2D(_MainTex, i.uv) * _Tint;
+                    float4 color = tex2D(_MainTex, i.uv) * _Tint;
+                    color *= tex2D(_DetailTex, i.uv * 10);
+                    return color;
                 }
 
             ENDCG

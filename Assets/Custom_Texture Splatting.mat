@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Custom_Textured With Detail
-  m_Shader: {fileID: 4800000, guid: 24794c0b2cc4841a5a81f78e5703e7ee, type: 3}
+  m_Name: Custom_Texture Splatting
+  m_Shader: {fileID: 4800000, guid: 8d3985959b0bc4ac7b9f467901c08c44, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -23,18 +23,12 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _DetailTex:
-        m_Texture: {fileID: 2800000, guid: 4e769b0f93181412eace910905cf7730, type: 3}
-        m_Scale: {x: 10, y: 10}
-        m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: ba78632fca75d4da99e5848339d77284, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
-    m_Floats:
-    - _Tiling: 1
-    m_Colors:
-    - _Tint: {r: 1, g: 1, b: 1, a: 1}
+    m_Floats: []
+    m_Colors: []
   m_BuildTextureStacks: []
   m_AllowLocking: 1

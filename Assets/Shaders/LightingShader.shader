@@ -6,27 +6,26 @@ Shader "Custom/Lighting"
 {
     Properties
     {
-        _MainTex("Splat Map", 2D) = "white"{}
-        [NoScaleOffset] _Texture1("Texture 1", 2D) = "white" {}
-        [NoScaleOffset] _Texture2("Texture 2", 2D) = "white" {}
-        [NoScaleOffset] _Texture3("Texture 3", 2D) = "white" {}
-        [NoScaleOffset] _Texture4("Texture 4", 2D) = "white" {}
+        _Tint("Tint", Color) = (1, 1, 1, 1)
+        _MainTex("Albedo", 2D) = "white"{}
     }
     SubShader
     {
         Pass
         {
+            Tags{
+                "LightMode" = "ForwardBase"
+            }
             CGPROGRAM
 
                 #pragma vertex VertexProgram
                 #pragma fragment FragmentProgram
 
-                #include "UnityCG.cginc"
+                #include "UnityStandardBRDF.cginc"
 
                 sampler2D _MainTex;
                 float4 _MainTex_ST;
-
-                sampler2D _Texture1, _Texture2, _Texture3, _Texture4;
+                float4 _Tint;
 
                 struct Interpolators {
                     float4 position : SV_POSITION;
@@ -43,14 +42,20 @@ Shader "Custom/Lighting"
                 Interpolators VertexProgram(VertexData v) {
                     Interpolators i;
                     i.position = UnityObjectToClipPos(v.position);
+                    i.normal = UnityObjectToWorldNormal(v.normal);
                     i.uv = TRANSFORM_TEX(v.uv, _MainTex);
-                    i.normal = v.normal;
                     return  i;
                 }
 
                 float4 FragmentProgram(Interpolators i) : SV_TARGET
                 {
-                    return float4(i.normal * .5 + .5, 1);
+                    i.normal = normalize(i.normal);
+                    float3 lightDir = _WorldSpaceLightPos0.xyz;
+                    float3 lightColor = _LightColor0.rgb;
+                    float3 albedo = tex2D(_MainTex, i.uv) * _Tint;
+                    float3 diffuse = albedo * lightColor * DotClamped(lightDir, i.normal);
+
+                    return float4(diffuse, 1);
                 }
 
             ENDCG
